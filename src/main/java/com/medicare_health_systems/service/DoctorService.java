@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -83,7 +85,10 @@ public class DoctorService {
     }
     @Transactional
     public DoctorProfileResponse updateProfile(UpdatedDoctorProfileRequest request) {
-        User currentUser = userService.getAuthenticatedUser();
+        User principal = userService.getAuthenticatedUser();
+
+        User currentUser = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new ResourceNotFound("User not found"));
 
         // Guard: profile must exist before updating
         DoctorProfile profile = doctorProfileRepository.findByUserId(currentUser.getId())
@@ -105,6 +110,21 @@ public class DoctorService {
         log.info("Doctor profile UPDATED for userId: {}", currentUser.getId());
         return mapToResponse(saved);
     }
+    @Transactional(readOnly = true)
+    public List<DoctorProfileResponse> getAllDoctors() {
+        return doctorProfileRepository.findAllActiveDoctors()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    //get doctor  profile
+    @Transactional(readOnly = true)
+    public DoctorProfileResponse getDoctorProfile(Long userId) {
+        DoctorProfile profile = doctorProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFound("DoctorProfile", "userId", userId));
+        return mapToResponse(profile);
+    }
+
     private DoctorProfileResponse mapToResponse(DoctorProfile profile) {
         User user = profile.getUser();
         return DoctorProfileResponse.builder()

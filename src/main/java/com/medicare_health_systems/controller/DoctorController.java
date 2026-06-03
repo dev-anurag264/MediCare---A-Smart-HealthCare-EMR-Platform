@@ -39,4 +39,24 @@ public class DoctorController {
             @Valid @RequestBody UpdatedDoctorProfileRequest request) {
         return ResponseEntity.ok(doctorService.updateProfile(request));
     }
+
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<DoctorProfileResponse>> getAllDoctors() {
+        return ResponseEntity.ok(doctorService.getAllDoctors());
+    }
+
+    @GetMapping("/{id}/profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DoctorProfileResponse> getDoctorProfile(@PathVariable Long id) {
+        return ResponseEntity.ok(doctorService.getDoctorProfile(id));
+    }
+
+    @GetMapping("/profile/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DoctorProfileResponse> getDoctorById(@PathVariable Long id) {
+        return ResponseEntity.ok(doctorService.getDoctorProfile(id));
+    }
+
+
 }

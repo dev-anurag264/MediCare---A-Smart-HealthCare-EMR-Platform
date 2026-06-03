@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
@@ -115,6 +116,38 @@ public class GlobalExceptionHandler {
                 "You don't have permission to access this resource",
                 request.getRequestURI()
         );
+    }
+    @ExceptionHandler(AppointmentClashException.class)
+    public ResponseEntity<ErrorResponse> handleAppointmentConflict(
+            AppointmentClashException ex, HttpServletRequest request) {
+        log.warn("Appointment conflict: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.CONFLICT, "Appointment Conflict", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidAppointmentStatusException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidStatus(
+            InvalidAppointmentStatusException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid Status Transition", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(
+            IllegalStateException ex, HttpServletRequest request) {
+        log.warn("Illegal state: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid Operation", ex.getMessage(), request.getRequestURI());
+    }
+
+    /**
+     * Optimistic locking — two users booked the same slot simultaneously.
+     * The second writer gets a 409. They should pick another slot.
+     */
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLock(
+            ObjectOptimisticLockingFailureException ex, HttpServletRequest request) {
+        log.warn("Optimistic lock conflict at: {}", request.getRequestURI());
+        return buildErrorResponse(HttpStatus.CONFLICT, "Booking Conflict",
+                "This slot was just booked by someone else. Please select another slot.",
+                request.getRequestURI());
     }
 
     //handle generic exceptions
