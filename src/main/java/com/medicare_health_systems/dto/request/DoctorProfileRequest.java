@@ -14,6 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DoctorProfileRequest {
+
     @NotBlank(message = "Specialty is required")
     @Size(max = 100, message = "Specialty cannot exceed 100 characters")
     private String specialty;

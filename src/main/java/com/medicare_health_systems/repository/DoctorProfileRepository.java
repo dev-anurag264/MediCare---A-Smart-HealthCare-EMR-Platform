@@ -14,13 +14,10 @@ public interface DoctorProfileRepository extends JpaRepository<DoctorProfile,Lon
     Optional<DoctorProfile> findByUserId(Long userId);
     boolean existsByUserId(Long userId);
 
-    //Loads doctor + user in ONE query.
-    //     * Without JOIN FETCH, accessing profile.getUser().getFirstName()
-    //     * would trigger a second SELECT (N+1 problem)
     @Query("SELECT dp FROM DoctorProfile dp JOIN FETCH dp.user u WHERE u.isActive = true")
     List<DoctorProfile> findAllActiveDoctors();
 
-    @Query("SELECT dp FROM DoctorProfile dp JOIN FETCH dp.user u " +
-            "WHERE LOWER(dp.specialty) LIKE LOWER(CONCAT('%', :specialty, '%')) AND u.isActive = true")
-    List<DoctorProfile> findBySpecialtyContainingIgnoreCase(@Param("specialty") String specialty);
+//    @Query("SELECT dp FROM DoctorProfile dp JOIN FETCH dp.user u " +
+//            "WHERE LOWER(dp.specialty) LIKE LOWER(CONCAT('%', :specialty, '%')) AND u.isActive = true")
+//    List<DoctorProfile> findBySpecialtyContainingIgnoreCase(@Param("specialty") String specialty);
 }
