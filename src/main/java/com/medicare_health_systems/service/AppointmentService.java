@@ -13,6 +13,10 @@ import com.medicare_health_systems.repository.DoctorProfileRepository;
 import com.medicare_health_systems.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,19 +95,30 @@ public class AppointmentService {
 
         return mapToResponse(saved);
     }
+
     //confirm pending booking
-//    @Transactional
-//    public AppointmentResponse confirmAppointment(Long appointmentId) {
-//        Appointment appointment = getAppointmentOrThrow(appointmentId);
-//        User currentUser = userService.getAuthenticatedUser();
-//
-//        validateDoctorOwnership(currentUser, appointment);
-//
-//        appointment.transitionTo(AppointmentStatus.CONFIRMED);  // Uses state machine in entity
-//        Appointment saved = appointmentRepository.save(appointment);
-//        log.info("Appointment {} confirmed by doctor {}", appointmentId, currentUser.getEmail());
-//        return mapToResponse(saved);
-//    }
+    @Transactional
+    public AppointmentResponse confirmAppointment(Long appointmentId) {
+        Appointment appointment = getAppointmentOrThrow(appointmentId);
+        User currentUser = userService.getAuthenticatedUser();
+
+        validateDoctorOwnership(currentUser, appointment);
+
+        appointment.transitionTo(AppointmentStatus.CONFIRMED);  // Uses state machine in entity
+        Appointment saved = appointmentRepository.save(appointment);
+        log.info("Appointment {} confirmed by doctor {}", appointmentId, currentUser.getEmail());
+        return mapToResponse(saved);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<AppointmentResponse> getAllAppointments(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("appointmentDate").descending());
+        return appointmentRepository
+                .findAll(pageable)
+                .map(this::mapToResponse);
+    }
+
 
     //validate slot
     private void validateSlotAlignment(LocalTime startTime, LocalTime availableFrom, int slotMinutes) {
@@ -112,6 +127,20 @@ public class AppointmentService {
             throw new InvalidAppointmentStatusException(
                     String.format("Start time %s does not align with the %d-minute slot grid starting at %s",
                             startTime, slotMinutes, availableFrom));
+        }
+    }
+
+
+
+    private Appointment getAppointmentOrThrow(Long id) {
+        return appointmentRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new ResourceNotFound("Appointment", "id", id));
+    }
+
+    private void validateDoctorOwnership(User currentUser, Appointment appointment) {
+        if (currentUser.getRole() == Role.DOCTOR &&
+                !appointment.getDoctor().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("You can only manage your own appointments");
         }
     }
 
