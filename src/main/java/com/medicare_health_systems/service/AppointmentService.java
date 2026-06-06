@@ -110,14 +110,84 @@ public class AppointmentService {
         return mapToResponse(saved);
     }
 
+    @Transactional
+    public AppointmentResponse cancelAppointment(Long appointmentId) {
+        Appointment appointment = getAppointmentOrThrow(appointmentId);
+        User currentUser = userService.getAuthenticatedUser();
+
+        if (currentUser.getRole() == Role.PATIENT) {
+            if (!appointment.getPatient().getId().equals(currentUser.getId())) {
+                throw new IllegalStateException("You can only cancel your own appointments");
+            }
+        }
+
+        appointment.transitionTo(AppointmentStatus.CANCELLED);
+        Appointment saved = appointmentRepository.save(appointment);
+        log.info("Appointment {} cancelled by {}", appointmentId, currentUser.getEmail());
+        return mapToResponse(saved);
+    }
+    @Transactional
+    public AppointmentResponse completeAppointment(Long appointmentId) {
+        Appointment appointment = getAppointmentOrThrow(appointmentId);
+        User currentUser = userService.getAuthenticatedUser();
+
+        validateDoctorOwnership(currentUser, appointment);
+
+        appointment.transitionTo(AppointmentStatus.COMPLETED);
+        Appointment saved = appointmentRepository.save(appointment);
+        return mapToResponse(saved);
+    }
+
+
+    @Transactional
+    public AppointmentResponse markNoShow(Long appointmentId) {
+        Appointment appointment = getAppointmentOrThrow(appointmentId);
+        User currentUser = userService.getAuthenticatedUser();
+
+        validateDoctorOwnership(currentUser, appointment);
+
+        appointment.transitionTo(AppointmentStatus.NO_SHOW);
+        return mapToResponse(appointmentRepository.save(appointment));
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<AppointmentResponse> getMyAppointments(int page, int size) {
+        User patient = userService.getAuthenticatedUser();
+        Pageable pageable = PageRequest.of(page, size);
+        return appointmentRepository.findByPatientId(patient.getId(), pageable)
+                .map(this::mapToResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AppointmentResponse> getDoctorAppointments(int page, int size) {
+        User doctor = userService.getAuthenticatedUser();
+        Pageable pageable = PageRequest.of(page, size);
+        return appointmentRepository.findByDoctorId(doctor.getId(), pageable)
+                .map(this::mapToResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public AppointmentResponse getAppointmentById(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findByIdWithDetails(appointmentId)
+                .orElseThrow(() -> new ResourceNotFound("Appointment", "id", appointmentId));
+
+        User currentUser = userService.getAuthenticatedUser();
+        // Patients can only view their own appointments
+        if (currentUser.getRole() == Role.PATIENT &&
+                !appointment.getPatient().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("Access denied");
+        }
+
+        return mapToResponse(appointment);
+    }
 
     @Transactional(readOnly = true)
     public Page<AppointmentResponse> getAllAppointments(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("appointmentDate").descending());
-        return appointmentRepository
-                .findAll(pageable)
-                .map(this::mapToResponse);
+        return appointmentRepository.findAll(pageable).map(this::mapToResponse);
     }
+
 
 
     //validate slot
