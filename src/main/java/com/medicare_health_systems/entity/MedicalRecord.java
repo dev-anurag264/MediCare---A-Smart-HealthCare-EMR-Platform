@@ -6,6 +6,8 @@ import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "medical_records",
@@ -47,6 +49,31 @@ public class MedicalRecord {
     @Column(name = "complaint", columnDefinition = "TEXT")
     private String complaint;
 
+    //mapping
+    @OneToMany(
+            mappedBy = "medicalRecord",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<Diagnosis> diagnoses = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "medicalRecord",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<Prescription> prescriptions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "medicalRecord",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<MedicalDocument> documents = new ArrayList<>();
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -66,5 +93,14 @@ public class MedicalRecord {
 
 
 
+    public void addDiagnosis(Diagnosis diagnosis) {
+        diagnoses.add(diagnosis);
+        diagnosis.setMedicalRecord(this);
+    }
+
+    public void addPrescription(Prescription prescription) {
+        prescriptions.add(prescription);
+        prescription.setMedicalRecord(this);
+    }
 
 }

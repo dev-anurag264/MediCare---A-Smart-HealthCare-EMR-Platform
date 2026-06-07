@@ -17,8 +17,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 15MB
 
 server:
   port: 8080
@@ -26,8 +35,7 @@ server:
 application:
   security:
     jwt:
-      # Read from environment variable
-      # Fallback value only for local development
+
       secret-key: ${JWT_SECRET:9YN1AS4nHG0BcmE/zplaX4q6zEymFQXez6X+VJEYIV4=}
 
       # 24 hours
@@ -36,6 +44,11 @@ application:
       refresh-token:
         # 7 days
         expiration: 604800000
+
+  file:
+    upload-dir: ${FILE_UPLOAD_DIR:./uploads}
+    allowed-types: application/pdf,image/jpeg,image/png,image/gif
+    max-file-size-bytes: 10485760
 
 logging:
   level:

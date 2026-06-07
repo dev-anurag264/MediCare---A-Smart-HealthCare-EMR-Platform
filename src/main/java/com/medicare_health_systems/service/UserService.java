@@ -57,6 +57,11 @@ public class UserService {
                 .getAuthentication()
                 .getPrincipal();
     }
+    @Transactional(readOnly = true)
+    public User getUserEntityById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+    }
 
     @Transactional
     public UserResponse registerUser(RegisterRequest request){

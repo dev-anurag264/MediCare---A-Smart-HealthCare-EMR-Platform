@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateMedicalRequest {
     @NotNull(message = "Appointment ID is required")
     private Long appointmentId;
