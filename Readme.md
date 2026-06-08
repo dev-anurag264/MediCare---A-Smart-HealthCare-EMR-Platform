@@ -1,7 +1,7 @@
 # Smart Healthcare Platform
 
-A production-grade RESTful backend for a Healthcare Appointment and Electronic Medical Records (EMR) system — inspired by platforms like Practo and Apollo Health. Built with Java 17 and Spring Boot 3.
-FrontEnd is still under development, as of now using postman for API testing and debugging.
+A production-grade RESTful backend for a Healthcare Appointment and Electronic Medical Records (EMR) system inspired by platforms like Practo and Apollo Health. Built with Java 17 and Spring Boot 3. FrontEnd is still under development, as of now using postman for API testing and debugging.
+
 ---
 
 ## Tech Stack
