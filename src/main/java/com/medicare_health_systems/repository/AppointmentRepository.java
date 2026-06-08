@@ -126,14 +126,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
             @Param("fromDate") LocalDate fromDate
     );
 
-    // ─────────────────────────────────────────────────────────────
-    // ADMIN QUERIES
-    // ─────────────────────────────────────────────────────────────
 
-    /**
-     * Fetch a single appointment with all relations loaded in one query.
-     * Used for detail views — avoids lazy loading issues outside @Transactional.
-     */
     @Query("""
         SELECT a FROM Appointment a
         JOIN FETCH a.patient p

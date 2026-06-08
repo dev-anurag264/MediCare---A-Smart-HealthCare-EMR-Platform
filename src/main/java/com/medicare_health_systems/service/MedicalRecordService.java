@@ -38,13 +38,15 @@ public class MedicalRecordService {
         Appointment appointment = appointmentRepository.findByIdWithDetails(request.getAppointmentId()).orElseThrow(
                 () -> new ResourceNotFound("Appointment does not exists"));
 
+        log.info("Logged in doctor ID: {}", doctor.getId());
+        log.info("Appointment doctor ID: {}", appointment.getDoctor().getId());
         //check for completed appointments
         if(appointment.getStatus() != AppointmentStatus.COMPLETED){
             throw new IllegalStateException("EMR can only be created for Completed appointments");
         }
 
         //doctor must own the appointment
-        if(appointment.getDoctor().getId().equals(doctor.getId())){
+        if(!appointment.getDoctor().getId().equals(doctor.getId())){
             throw new IllegalStateException("You can only create EMR for your own appointment");
         }
         if (medicalRecordRepository.existsByAppointmentId(request.getAppointmentId())) {

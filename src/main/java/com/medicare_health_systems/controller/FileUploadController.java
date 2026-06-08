@@ -2,12 +2,16 @@ package com.medicare_health_systems.controller;
 
 import com.medicare_health_systems.dto.request.MedicalRecordResponse;
 import com.medicare_health_systems.entity.DocumentType;
+import com.medicare_health_systems.entity.MedicalDocument;
+import com.medicare_health_systems.exceptions.ResourceNotFound;
 import com.medicare_health_systems.repository.MedicalDocumentRepository;
 import com.medicare_health_systems.service.FileStorageService;
 import com.medicare_health_systems.service.MedicalRecordService;
 import com.medicare_health_systems.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,5 +38,23 @@ public class FileUploadController {
         return ResponseEntity.ok(
                 medicalRecordService.uploadDocument(file, patientId, medicalRecordId, documentType)
         );
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<Resource> downloadDocument(@PathVariable Long id){
+
+        var document = medicalDocumentRepository.findByIdWithDetails(id).orElseThrow(
+                () -> new ResourceNotFound("File not found!")
+        );
+
+        Resource resource = fileStorageService.loadFileAsResource(document.getStoredName());
+
+
+        String  contentType = document.getFileType() !=  null ? document.getFileType() : "application/octet-stream";
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(
+                HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + document.getOriginalName() +"\"" ).body(resource);
+
     }
 }
