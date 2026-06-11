@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { background: #2563eb; padding: 24px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 22px; }
+        .body { padding: 32px; color: #333333; }
+        .body p { line-height: 1.6; }
+        .details { background: #f0f4ff; border-left: 4px solid #2563eb; padding: 16px; border-radius: 4px; margin: 20px 0; }
+        .details p { margin: 6px 0; }
+        .footer { background: #f4f4f4; padding: 16px; text-align: center; font-size: 12px; color: #888888; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Appointment Confirmation at Medicare Hospitals</h1>
+    </div>
+    <div class="body">
+        <p>Dear <strong th:text="${patientName}">Patient</strong>,</p>
+        <p>Your appointment has been successfully booked. Here are your details:</p>
+        <div class="details">
+            <p><strong>Appointment ID:</strong> <span th:text="${appointmentId}"></span></p>
+            <p><strong>Doctor:</strong> <span th:text="${doctorName}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${appointmentDate}"></span></p>
+            <p><strong>Time:</strong> <span th:text="${startTime}"></span></p>
+        </div>
+        <p>Please arrive 10 minutes before your scheduled time.</p>
+        <p>If you need to cancel or reschedule, please do so at least 2 hours in advance.</p>
+    </div>
+    <div class="footer">
+        <p>MediCare HealthCare -This is an automated message, please do not reply.</p>
+    </div>
+</div>
+</body>
+</html>

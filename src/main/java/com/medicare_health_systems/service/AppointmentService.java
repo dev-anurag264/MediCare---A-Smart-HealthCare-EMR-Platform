@@ -5,6 +5,7 @@ import com.medicare_health_systems.dto.request.BookingAppointmentRequest;
 import com.medicare_health_systems.dto.response.AppointmentResponse;
 import com.medicare_health_systems.dto.response.BookingAppointmentResponse;
 import com.medicare_health_systems.entity.*;
+import com.medicare_health_systems.events.AppointmentBookedEvent;
 import com.medicare_health_systems.exceptions.AppointmentClashException;
 import com.medicare_health_systems.exceptions.InvalidAppointmentStatusException;
 import com.medicare_health_systems.exceptions.ResourceNotFound;
@@ -13,6 +14,7 @@ import com.medicare_health_systems.repository.DoctorProfileRepository;
 import com.medicare_health_systems.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,8 @@ public class AppointmentService {
     private final DoctorProfileRepository doctorProfileRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ApplicationEventPublisher eventPublisher;
+
 
     //book appointment
     @Transactional
@@ -92,6 +96,18 @@ public class AppointmentService {
         log.info("Appointment booked. ID: {}, Patient: {}, Doctor: {}, Date: {} {}",
                 saved.getId(), patient.getEmail(), doctor.getEmail(),
                 request.getAppointmentDate(), startTime);
+
+        eventPublisher.publishEvent(
+                new AppointmentBookedEvent(
+                        this,
+                        saved.getId(),
+                        patient.getEmail(),
+                        patient.getFirstName(),
+                        doctor.getFirstName() + " " + doctor.getLastName(),
+                        saved.getAppointmentDate().toString(),
+                        saved.getStartTime().toString()
+                )
+        );
 
         return mapToResponse(saved);
     }

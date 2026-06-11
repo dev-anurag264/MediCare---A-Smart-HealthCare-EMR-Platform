@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/medicare_db
-    username: postgres
-    password: 123
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,7 +22,19 @@ spring:
         order_inserts: true
         order_updates: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
   servlet:
     multipart:
       enabled: true
@@ -36,7 +48,7 @@ application:
   security:
     jwt:
 
-      secret-key: ${JWT_SECRET:9YN1AS4nHG0BcmE/zplaX4q6zEymFQXez6X+VJEYIV4=}
+      secret-key: ${JWT_SECRET:JWT_SECRET_KEY}
 
       # 24 hours
       expiration: 86400000
@@ -53,3 +65,4 @@ application:
 logging:
   level:
     org.springframework.security: DEBUG
+
