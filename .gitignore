@@ -1,5 +1,7 @@
 HELP.md
 target/
+*.jar
+*.war
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -19,6 +21,9 @@ target/
 *.iml
 *.ipr
 
+application*.yml
+application*.yaml
+uploads/
 .env
 application.yaml
 ### NetBeans ###

@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: healthcare-postgres
+    environment:
+      POSTGRES_DB: healthcare_db
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5433:5432"     # host:container — access DB from your machine too
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d healthcare_db"]
+      interval: 10s     # check every 10 seconds
+      timeout: 5s       # fail if no response within 5 seconds
+      retries: 5        # mark as unhealthy after 5 failures
+      start_period: 30s # give PostgreSQL 30s to start before checking
+    networks:
+      - healthcare-network
+
+
+  app:
+    build:
+      context: .          # build from current directory
+      dockerfile: Dockerfile
+    container_name: healthcare-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring profile: 'prod' activates application-prod.yml
+      SPRING_PROFILES_ACTIVE: prod
+
+      # Database — uses the postgres service name as hostname
+      # Inside Docker network, services find each other by service name
+      # 'postgres' here = the service name above, not localhost
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/healthcare_db
+
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+
+      # Email
+      MAIL_USERNAME: ${MAIL_USERNAME:-your-email@gmail.com}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-your-app-password}
+
+      # File storage — absolute path inside the container
+      FILE_UPLOAD_DIR: /app/uploads
+
+      # JVM timezone
+      TZ: Asia/Kolkata
+
+    volumes:
+      # Mount uploads directory so files persist outside the container
+      # host path:container path
+      - ./uploads:/app/uploads
+      # Mount logs directory
+      - ./logs:/app/logs
+
+    depends_on:
+      postgres:
+        condition: service_healthy   # wait for PostgreSQL healthcheck to pass
+
+    networks:
+      - healthcare-network
+
+    restart: unless-stopped   # restart on crash, but not if manually stopped
+
+# ── Named volumes ────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+
+# ── Networks ─────────────────────────────────────────────────────
+# Custom network so services can talk to each other by name
+# and are isolated from other Docker containers on your machine
+networks:
+  healthcare-network:
+    driver: bridge
