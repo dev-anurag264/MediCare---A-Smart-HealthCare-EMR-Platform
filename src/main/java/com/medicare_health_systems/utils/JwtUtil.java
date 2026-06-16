@@ -60,7 +60,11 @@ public class JwtUtil {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
-
+    public long getRemainingValidity(String token) {
+        Date expiration = extractExpiration(token);
+        long remaining = expiration.getTime() - System.currentTimeMillis();
+        return Math.max(remaining, 0);
+    }
     public boolean isTokenStructureValid(String token) {
         try {
             Jwts.parserBuilder()

@@ -23,7 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
-
+    private final TokenInvalidateService tokenInvalidateService;
 
     @Transactional
     public AuthResponse register(RegisterRequest request){
@@ -66,6 +66,15 @@ public class AuthService {
         return buildAuthResponse(user, jwtToken);
 
     }
+    //logout function
+    public void logout(String token){
+        long remainingValidity = jwtUtil.getRemainingValidity(token);
+        if(remainingValidity > 0){
+            tokenInvalidateService.blacklistToken(token, remainingValidity);
+            log.info("Token blacklisted on logout, remaining validity: {}ms", remainingValidity);
+        }
+    }
+
 
     private AuthResponse buildAuthResponse(User user, String jwtToken) {
         return AuthResponse.builder()

@@ -27,7 +27,7 @@ public class EmailService {
     @Value("${application.mail.from-name:MediCare HealthCare}")
     private String fromName;
 
-
+    //appointment booked
     @Async("emailTaskExecutor")
     public void sendAppointmentBookedEmail(
             String toEmail,
@@ -48,6 +48,64 @@ public class EmailService {
                 toEmail,
                 "Appointment Confirmation - Medicare Health",
                 "email/appointment-booked",
+                context
+        );
+    }
+    //appointment confirmed
+    @Async("emailTaskExecutor")
+    public void sendAppointmentConfirmedEmail(String toEmail, String patientName,
+                                              String doctorName, String appointmentDate, String startTime) {
+
+        Context context = new Context();
+        context.setVariable("patientName", patientName);
+        context.setVariable("doctorName", doctorName);
+        context.setVariable("appointmentDate", appointmentDate);
+        context.setVariable("startTime", startTime);
+
+        sendHtmlEmail(
+                toEmail,
+                "Appointment Confirmed - Healthcare Platform",
+                "email/appointment-confirmed",
+                context
+        );
+    }
+    //medical record created email
+    @Async("emailTaskExecutor")
+    public void sendMedicalRecordCreatedEmail(String toEmail, String patientName,
+                                              String doctorName, String visitDate, Long recordId) {
+
+        Context context = new Context();
+        context.setVariable("patientName", patientName);
+        context.setVariable("doctorName", doctorName);
+        context.setVariable("visitDate", visitDate);
+        context.setVariable("recordId", recordId);
+
+        sendHtmlEmail(
+                toEmail,
+                "Medical Record Available - Healthcare Platform",
+                "email/medical-record-created",
+                context
+        );
+    }
+
+    //appointment cancelled
+    @Async("emailTaskExecutor")
+    public void sendAppointmentCancelledEmail(String toEmail, String recipientName,
+                                              String doctorName, String patientName,
+                                              String appointmentDate, String startTime, String cancelledBy) {
+
+        Context context = new Context();
+        context.setVariable("recipientName", recipientName);
+        context.setVariable("doctorName", doctorName);
+        context.setVariable("patientName", patientName);
+        context.setVariable("appointmentDate", appointmentDate);
+        context.setVariable("startTime", startTime);
+        context.setVariable("cancelledBy", cancelledBy);
+
+        sendHtmlEmail(
+                toEmail,
+                "Appointment Cancelled - Healthcare Platform",
+                "email/appointment-cancelled",
                 context
         );
     }

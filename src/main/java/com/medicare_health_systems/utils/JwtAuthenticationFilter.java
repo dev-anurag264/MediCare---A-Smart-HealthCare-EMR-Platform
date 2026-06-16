@@ -1,5 +1,6 @@
 package com.medicare_health_systems.utils;
 
+import com.medicare_health_systems.service.TokenInvalidateService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final TokenInvalidateService tokenInvalidateService;
+
 
     @Override
     protected void doFilterInternal(@NotNull  HttpServletRequest request,
@@ -40,6 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt = authHeader.substring(AppConstants.JWT_PREFIX_LENGTH);
         log.debug("Processing JWT token for request: {}", request.getRequestURI());
 
+        if (tokenInvalidateService.isTokenBlacklisted(jwt)) {
+            log.warn("Blacklisted token used at path: {}", request.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String userEmail;
         try {

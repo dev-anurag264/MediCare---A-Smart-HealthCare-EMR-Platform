@@ -5,6 +5,7 @@ import com.medicare_health_systems.dto.request.RegisterRequest;
 import com.medicare_health_systems.dto.response.AuthResponse;
 import com.medicare_health_systems.service.AuthService;
 import com.medicare_health_systems.utils.AppConstants;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,16 @@ public class AuthController {
         log.info("Login request received for email: {}", request.getEmail());
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            authService.logout(token);
+        }
+        return ResponseEntity.noContent().build();
     }
 
 }

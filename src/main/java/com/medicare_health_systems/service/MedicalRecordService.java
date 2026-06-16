@@ -172,7 +172,6 @@ public class MedicalRecordService {
     public Page<MedicalRecordResponse> getPatientRecords(Long patientId, int page, int size) {
         User currentUser = userService.getAuthenticatedUser();
 
-        // Patient can only view own history
         if (currentUser.getRole() == Role.PATIENT &&
                 !currentUser.getId().equals(patientId)) {
             throw new IllegalStateException("Access denied");
