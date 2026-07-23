@@ -24,7 +24,7 @@ target/
 
 uploads/
 .env
-application.yaml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
