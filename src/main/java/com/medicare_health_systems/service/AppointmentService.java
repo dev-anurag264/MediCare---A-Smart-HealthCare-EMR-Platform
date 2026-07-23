@@ -29,7 +29,7 @@ import java.time.LocalTime;
 @Slf4j
 public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
-    private final DoctorProfileRepository doctorProfileRepository;
+    private final DoctorProfileRepo doctorProfileRepository;
     private final UserRepository userRepository;
     private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
