@@ -11,6 +11,7 @@ import com.medicare_health_systems.entity.User;
 import com.medicare_health_systems.exceptions.ResourceNotFound;
 import com.medicare_health_systems.exceptions.UserAlreadyExistsException;
 import com.medicare_health_systems.repository.AppointmentRepository;
+import com.medicare_health_systems.repository.DoctorProfileRepo;
 import com.medicare_health_systems.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class DoctorService {
-    private final DoctorProfileRepository doctorProfileRepository;
+    private final DoctorProfileRepo doctorProfileRepository;
     private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserService userService;

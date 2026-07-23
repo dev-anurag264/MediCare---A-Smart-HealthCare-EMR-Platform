@@ -3,14 +3,13 @@ package com.medicare_health_systems.repository;
 import com.medicare_health_systems.entity.DoctorProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DoctorProfileRepository extends JpaRepository<DoctorProfile,Long> {
+public interface DoctorProfileRepo extends JpaRepository<DoctorProfile,Long> {
     Optional<DoctorProfile> findByUserId(Long userId);
     boolean existsByUserId(Long userId);
 

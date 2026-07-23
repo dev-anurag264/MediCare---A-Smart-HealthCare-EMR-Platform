@@ -10,7 +10,7 @@ import com.medicare_health_systems.exceptions.AppointmentClashException;
 import com.medicare_health_systems.exceptions.InvalidAppointmentStatusException;
 import com.medicare_health_systems.exceptions.ResourceNotFound;
 import com.medicare_health_systems.repository.AppointmentRepository;
-import com.medicare_health_systems.repository.DoctorProfileRepository;
+import com.medicare_health_systems.repository.DoctorProfileRepo;
 import com.medicare_health_systems.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
