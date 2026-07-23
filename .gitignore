@@ -21,8 +21,7 @@ target/
 *.iml
 *.ipr
 
-application*.yml
-application*.yaml
+
 uploads/
 .env
 application.yaml

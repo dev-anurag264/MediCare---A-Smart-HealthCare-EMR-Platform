@@ -1,0 +1,55 @@
+# ================================================================
+# DEV PROFILE — runs when you start the app in IntelliJ
+# Everything here is for local development only
+# ================================================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/medicare_db
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: Dev-HikariPool
+      maximum-pool-size: 5
+      minimum-idle: 2
+
+  jpa:
+    hibernate:
+      ddl-auto: update      # auto creates/updates tables locally
+    show-sql: true          # print SQL in console
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: anuragcse23@gmail.com
+    password: ychf bkzo hqqp kwxk
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+# Dev logging — verbose, see everything
+logging:
+  level:
+    com.medicare_health_systems: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+  pattern:
+    console: "%d{HH:mm:ss} %-5level [%thread] %logger{30} - %msg%n"

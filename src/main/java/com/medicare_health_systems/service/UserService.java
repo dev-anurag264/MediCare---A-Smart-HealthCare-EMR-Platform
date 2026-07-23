@@ -25,6 +25,7 @@ public class UserService {
 
     public UserResponse getCurrentUser(){
         User currentUser = getAuthenticatedUser();
+
         return  mapToUserResponse(currentUser);
     }
     @Transactional(readOnly = true)

@@ -1,10 +1,17 @@
-2026-06-17 12:57:45 INFO  [main] c.m.MedicareHealthSystemsApplication - Starting MedicareHealthSystemsApplication v0.0.1-SNAPSHOT using Java 17.0.19 with PID 1 (/app/app.jar started by appuser in /app)
-2026-06-17 12:57:45 INFO  [main] c.m.MedicareHealthSystemsApplication - The following 1 profile is active: "prod"
-2026-06-17 12:58:07 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-17 12:58:15 WARN  [main] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-06-17 12:58:15 INFO  [main] c.m.service.FileStorageService - File Storage initialized at /app/uploads
-2026-06-17 12:58:16 INFO  [main] c.m.config.AsyncConfig - Email task executor initialized with core=5, max=10, queue=500
-2026-06-17 12:58:16 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-17 12:58:18 INFO  [main] c.m.MedicareHealthSystemsApplication - Started MedicareHealthSystemsApplication in 34.526 seconds (process running for 35.927)
-2026-06-17 12:58:51 INFO  [http-nio-8080-exec-2] c.m.controller.AuthController - Registration request received for email: subtech122@gmail.com
-2026-06-17 12:58:51 INFO  [http-nio-8080-exec-2] c.m.service.AuthService - Registering new user with email : subtech122@gmail.com
+2026-07-20 15:24:43 INFO  [main] c.m.MedicareHealthSystemsApplication - Starting MedicareHealthSystemsApplication v0.0.1-SNAPSHOT using Java 17.0.19 with PID 1 (/app/app.jar started by appuser in /app)
+2026-07-20 15:24:43 INFO  [main] c.m.MedicareHealthSystemsApplication - The following 1 profile is active: "prod"
+2026-07-20 15:24:54 WARN  [main] org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-20 15:24:58 WARN  [main] o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2026-07-20 15:24:58 WARN  [main] o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uk_medical_record_appointment" of relation "medical_records" does not exist, skipping
+2026-07-20 15:24:58 WARN  [main] o.h.e.jdbc.spi.SqlExceptionHelper - SQL Warning Code: 0, SQLState: 00000
+2026-07-20 15:24:58 WARN  [main] o.h.e.jdbc.spi.SqlExceptionHelper - constraint "uk_user_email" of relation "users" does not exist, skipping
+2026-07-20 15:25:03 WARN  [main] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-07-20 15:25:03 INFO  [main] c.m.service.FileStorageService - File Storage initialized at /app/uploads
+2026-07-20 15:25:03 INFO  [main] c.m.config.AsyncConfig - Email task executor initialized with core=5, max=10, queue=500
+2026-07-20 15:25:04 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-20 15:25:06 INFO  [main] c.m.MedicareHealthSystemsApplication - Started MedicareHealthSystemsApplication in 26.173 seconds (process running for 28.471)
+2026-07-20 15:27:13 INFO  [http-nio-8080-exec-2] c.m.controller.AuthController - Registration request received for email: anuragtest002@gmail.com
+2026-07-20 15:27:13 INFO  [http-nio-8080-exec-2] c.m.service.AuthService - Registering new user with email : anuragtest002@gmail.com
+2026-07-20 15:28:04 INFO  [http-nio-8080-exec-3] c.m.controller.AuthController - Login request received for email: anuragtest002@gmail.com
+2026-07-20 15:28:04 INFO  [http-nio-8080-exec-3] c.m.service.AuthService - Login Attempt for user : anuragtest002@gmail.com
+2026-07-20 15:28:05 INFO  [http-nio-8080-exec-3] c.m.service.AuthService - User Logged in successfully! ID : 1 Role : DOCTOR

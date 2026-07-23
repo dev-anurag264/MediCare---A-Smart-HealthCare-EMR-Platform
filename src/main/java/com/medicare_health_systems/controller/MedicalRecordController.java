@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(AppConstants.API_BASE_PATH + "/medicalrecord")
 @RequiredArgsConstructor
-public class MedicalRecordController {
+public class  MedicalRecordController {
 
     private final MedicalRecordService medicalRecordService;
 

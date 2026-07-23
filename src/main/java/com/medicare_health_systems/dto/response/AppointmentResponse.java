@@ -2,6 +2,7 @@ package com.medicare_health_systems.dto.response;
 
 import com.medicare_health_systems.entity.AppointmentStatus;
 import lombok.*;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class AppointmentResponse {
 
     private Long id;

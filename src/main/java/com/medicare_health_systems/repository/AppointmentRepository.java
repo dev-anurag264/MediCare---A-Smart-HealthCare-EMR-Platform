@@ -2,10 +2,12 @@ package com.medicare_health_systems.repository;
 
 import com.medicare_health_systems.entity.Appointment;
 import com.medicare_health_systems.entity.AppointmentStatus;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -134,6 +136,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
         WHERE a.id = :id
         """)
     Optional<Appointment> findByIdWithDetails(@Param("id") Long id);
+
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Appointment a WHERE a.id = :id")
+    Optional<Appointment> findByIdWithLock(@Param("id") Long id);
 
     Page<Appointment> findByStatus(AppointmentStatus status, Pageable pageable);
 

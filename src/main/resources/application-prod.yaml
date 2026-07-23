@@ -1,0 +1,73 @@
+# ================================================================
+# PROD PROFILE — runs inside Docker container
+# All sensitive values come from environment variables (.env file)
+# NEVER hardcode passwords here
+# ================================================================
+
+spring:
+  datasource:
+    # 'postgres' here = the service name in docker-compose.yml
+    # Inside Docker, containers find each other by service name
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/medicare_db}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: Prod-HikariPool
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      # validate — NEVER use update in production
+      # Only checks schema matches entities, never modifies DB
+      ddl-auto: update
+    show-sql: false         # never log SQL in production
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 2000ms
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# Prod logging — only important things
+logging:
+  level:
+    com.medicare_health_systems: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    root: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+  file:
+    name: /app/logs/medicare-health-systems.log
+
+# Disable Swagger in production — security risk
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

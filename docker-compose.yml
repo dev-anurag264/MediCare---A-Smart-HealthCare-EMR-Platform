@@ -43,6 +43,29 @@ services:
     networks:
       - healthcare-network
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: medicare-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - healthcare-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: medicare-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - healthcare-network
+
   app:
     build:
       context: .
@@ -76,6 +99,8 @@ services:
       # File Uploads
       FILE_UPLOAD_DIR: /app/uploads
 
+      # Kafka
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Timezone
       TZ: Asia/Kolkata
 
@@ -101,3 +126,4 @@ volumes:
 networks:
   healthcare-network:
     driver: bridge
+

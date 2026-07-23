@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsersByRole(role));
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<Void> deactivateUser(@PathVariable Long id) {
         userService.deactivateUser(id);
         return ResponseEntity.noContent().build();
